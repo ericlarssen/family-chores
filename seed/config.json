@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "household": {
+    "name": "Home",
+    "timezone": "America/Chicago",
+    "weekStartsOn": "mon"
+  },
+
+  "people": [
+    { "id": "p1", "name": "Adult 1", "type": "adult", "color": "#2F5FA8" },
+    { "id": "p2", "name": "Adult 2", "type": "adult", "color": "#A8436B" },
+    { "id": "p3", "name": "Big Sister", "type": "child", "age": 8, "color": "#7A5BD6" },
+    { "id": "p4", "name": "Little Sister", "type": "child", "age": 6, "color": "#12A19A" }
+  ],
+
+  "rotation": {
+    "swapEveryNWeeks": 1,
+    "anchorMonday": "2026-08-03",
+    "start": { "p1": "evening", "p2": "morning" }
+  },
+
+  "anchors": {
+    "evening": {
+      "id": "evening",
+      "label": "Evening closedown",
+      "when": "~15 min, after the girls are in bed",
+      "steps": [
+        "Kitchen to zero — counters clear, sink empty, dishwasher started, table wiped",
+        "Living room reset — blankets folded, cushions straight, remotes and chargers home",
+        "Basket lap — collect anything that lives elsewhere, redistribute it",
+        "Trash and recycling out if more than three-quarters full",
+        "Keys, wallet, phone to the landing spot",
+        "Coffee set up, breakfast items out for morning"
+      ],
+      "daily": [
+        { "id": "eve-reset", "label": "Evening closedown", "days": [0, 1, 2, 3, 4, 5, 6] },
+        { "id": "eve-walk", "label": "Evening dog walk", "days": [0, 1, 2, 3, 4, 5, 6] },
+        { "id": "eve-cook", "label": "Cook dinner", "days": [0, 2, 4] },
+        { "id": "eve-dish", "label": "Kitchen reset after dinner", "days": [1, 3, 5] }
+      ],
+      "weekly": [
+        { "id": "eve-wk-0", "day": 0, "label": "Laundry: adult clothes + towels — put away same day" },
+        { "id": "eve-wk-1", "day": 1, "label": "Fridge pass — toss leftovers, wipe a shelf" },
+        { "id": "eve-wk-2", "day": 2, "label": "Quick vacuum, high-traffic paths only" },
+        { "id": "eve-wk-3", "day": 3, "label": "Paper purge, 15 min — file, scan, shred" },
+        { "id": "eve-wk-4", "day": 4, "label": "Meal plan + grocery order" },
+        { "id": "eve-wk-5", "day": 5, "label": "Minivan interior reset" },
+        { "id": "eve-wk-6", "day": 6, "label": "Dog care + 20 min bills and admin" }
+      ]
+    },
+
+    "morning": {
+      "id": "morning",
+      "label": "Morning launch",
+      "when": "~15 min, before anyone leaves",
+      "steps": [
+        "Beds made, curtains open, hampers checked",
+        "Breakfast dishes straight into the dishwasher — never the sink",
+        "Entry reset — shoes racked, coats hung, backpacks staged",
+        "Bathroom 2-minute wipe — sink, mirror, towels hung straight",
+        "Mail opened standing over the recycling bin",
+        "Unload the van — nothing sleeps in it, nothing lands on the counter"
+      ],
+      "daily": [
+        { "id": "morn-reset", "label": "Morning launch", "days": [0, 1, 2, 3, 4, 5, 6] },
+        { "id": "morn-walk", "label": "Morning dog walk", "days": [0, 1, 2, 3, 4, 5, 6] },
+        { "id": "morn-cook", "label": "Cook dinner", "days": [1, 3, 5] },
+        { "id": "morn-dish", "label": "Kitchen reset after dinner", "days": [0, 2, 4] }
+      ],
+      "weekly": [
+        { "id": "morn-wk-0", "day": 0, "label": "Sweep kitchen and entry floors" },
+        { "id": "morn-wk-1", "day": 1, "label": "Laundry: girls' clothes + one bed's sheets" },
+        { "id": "morn-wk-2", "day": 2, "label": "Girls' bathroom quick pass + restock" },
+        { "id": "morn-wk-3", "day": 3, "label": "Fridge and pantry check, build the list" },
+        { "id": "morn-wk-4", "day": 4, "label": "School folders, calendar, weekend gear" },
+        { "id": "morn-wk-5", "day": 5, "label": "Minivan exterior + gas + booster wipe" },
+        { "id": "morn-wk-6", "day": 6, "label": "Yard — dog waste pickup, outdoor tidy" }
+      ]
+    }
+  },
+
+  "childTasks": {
+    "p3": {
+      "daily": [
+        { "id": "p3-bed", "icon": "🛏️", "label": "Make my bed" },
+        { "id": "p3-hamper", "icon": "🧺", "label": "Dirty clothes in hamper" },
+        { "id": "p3-laundry", "icon": "👕", "label": "Put away my clean laundry" },
+        { "id": "p3-plate", "icon": "🍽️", "label": "Clear my plate and cup" },
+        { "id": "p3-water", "icon": "🐶", "label": "Fill the dog's water bowl" },
+        { "id": "p3-backpack", "icon": "🎒", "label": "Unpack my backpack" },
+        { "id": "p3-shoes", "icon": "👟", "label": "Shoes and coat put away" },
+        { "id": "p3-tidy", "icon": "🧹", "label": "10-minute room tidy" }
+      ],
+      "byDay": [
+        { "id": "p3-job-0", "day": 0, "label": "Set the dinner table" },
+        { "id": "p3-job-1", "day": 1, "label": "Wipe bathroom counter and sink" },
+        { "id": "p3-job-2", "day": 2, "label": "Fold and put away towels" },
+        { "id": "p3-job-3", "day": 3, "label": "Empty the small trash cans" },
+        { "id": "p3-job-4", "day": 4, "label": "Tidy bedroom floor and shelves" },
+        { "id": "p3-job-5", "day": 5, "label": "Van: trash out, wipe seats and windows" },
+        { "id": "p3-job-6", "day": 6, "label": "Pick up dog toys, refill feeder hopper" }
+      ]
+    },
+    "p4": {
+      "daily": [
+        { "id": "p4-bed", "icon": "🛏️", "label": "Make my bed" },
+        { "id": "p4-hamper", "icon": "🧺", "label": "Dirty clothes in hamper" },
+        { "id": "p4-plate", "icon": "🍽️", "label": "Clear my plate" },
+        { "id": "p4-shoes", "icon": "👟", "label": "Shoes and coat put away" },
+        { "id": "p4-tidy", "icon": "🧹", "label": "10-minute tidy — toys away" }
+      ],
+      "byDay": [
+        { "id": "p4-job-0", "day": 0, "label": "Napkins and silverware on table" },
+        { "id": "p4-job-1", "day": 1, "label": "Wipe the mirror, hang up towels" },
+        { "id": "p4-job-2", "day": 2, "label": "Match all the socks" },
+        { "id": "p4-job-3", "day": 3, "label": "Dust the low shelves" },
+        { "id": "p4-job-4", "day": 4, "label": "Put away toys and books" },
+        { "id": "p4-job-5", "day": 5, "label": "Van: hand out trash, wipe doors" },
+        { "id": "p4-job-6", "day": 6, "label": "Water plants, line up the shoes" }
+      ]
+    }
+  },
+
+  "cleaner": {
+    "source": "schedule",
+    "calendarQuery": "Cleaner",
+    "schedule": {
+      "everyNWeeks": 2,
+      "anchorMonday": "2026-08-03",
+      "day": 2
+    },
+    "clearDecks": {
+      "id": "clear-decks",
+      "label": "Clear the decks",
+      "when": "The evening before, 20 min together",
+      "why": "A cleaner works around clutter rather than moving it. Twenty minutes clearing surfaces roughly doubles what you get out of the visit.",
+      "items": [
+        { "id": "decks-0", "label": "Every horizontal surface emptied — counters, tables, dressers, nightstands" },
+        { "id": "decks-1", "label": "Floors clear of toys, bags, shoes, laundry" },
+        { "id": "decks-2", "label": "Bathroom counters down to nothing" },
+        { "id": "decks-3", "label": "All dirty laundry in hampers" },
+        { "id": "decks-4", "label": "Dog toys and bowls gathered to one spot" }
+      ]
+    },
+    "touchUp": {
+      "id": "touch-up",
+      "label": "Off-week touch-up",
+      "when": "Saturday, 30 min together",
+      "items": [
+        { "id": "touch-0", "label": "Quick vacuum of main living areas" },
+        { "id": "touch-1", "label": "Both bathrooms — sinks, toilets, mirrors" },
+        { "id": "touch-2", "label": "Kitchen floor spot mop" }
+      ]
+    }
+  },
+
+  "allowlist": [
+    { "email": "elarssen91@gmail.com", "role": "admin", "personId": "p1" },
+    { "email": "andlarssen@gmail.com", "role": "admin", "personId": "p2" }
+  ]
+}
