@@ -83,10 +83,14 @@ export function weekRangeLabel(mondayIso) {
   return `${mMonth} ${mDay} – ${sMonth} ${sDay}`
 }
 
+// Day index within its week, Monday = 0 … Sunday = 6.
+export function dayIndexOf(iso) {
+  const dow = new Date(isoToUTC(iso)).getUTCDay()
+  return (dow + 6) % 7
+}
+
 // Longer human date, e.g. "Wed, Aug 5".
 export function longDayLabel(iso) {
-  const dow = new Date(isoToUTC(iso)).getUTCDay()
-  const weekdayIndex = (dow + 6) % 7
   const month = MONTHS[Number(iso.slice(5, 7)) - 1]
-  return `${WEEKDAYS[weekdayIndex]}, ${month} ${Number(iso.slice(8, 10))}`
+  return `${WEEKDAYS[dayIndexOf(iso)]}, ${month} ${Number(iso.slice(8, 10))}`
 }

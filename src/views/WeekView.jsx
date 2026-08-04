@@ -1,105 +1,100 @@
+import {
+  Alert,
+  Center,
+  Container,
+  Group,
+  Loader,
+  Menu,
+  SimpleGrid,
+  Text,
+  Title,
+} from '@mantine/core'
 import { useConfig } from '../data/useConfig'
 import { useHousehold } from '../data/useHousehold'
 import { useWeek } from '../data/useWeek'
-import { useWeekId } from '../data/useWeekId'
-import { currentWeekId, dayDates, longDayLabel, todayIso } from '../lib/weeks'
-import WeekNav from '../components/WeekNav'
-import TaskGrid from '../components/TaskGrid'
-import Banner from '../components/Banner'
+import { useHashDate } from '../data/useHashDate'
+import { addDays, dayIndexOf, longDayLabel, mondayOf, todayIso } from '../lib/weeks'
+import DaySelector from '../components/DaySelector'
+import TaskCard from '../components/TaskCard'
 
-// Turn a person's frozen anchor into grid rows: daily tasks (multi-day) followed
-// by weekly tasks (single day). All text comes from config.
-function anchorRows(anchor, person) {
-  if (!anchor) return []
-  const daily = (anchor.daily || []).map((t) => ({
-    taskId: t.id,
-    personId: person.id,
-    label: t.label,
-    activeDays: t.days,
-    color: person.color,
-  }))
-  const weekly = (anchor.weekly || []).map((t) => ({
-    taskId: t.id,
-    personId: person.id,
-    label: t.label,
-    activeDays: [t.day],
-    color: person.color,
-  }))
-  return [...daily, ...weekly]
-}
-
+// Mobile-first, day-focused view. One day at a time, each adult's tasks as a
+// tappable checklist; navigate days with a calendar. Widens to two columns on
+// tablet+ via SimpleGrid.
 export default function WeekView({ profile, onSignOut }) {
   const { config, loading: configLoading } = useConfig()
   const { timezone } = useHousehold()
 
-  const defaultMonday = currentWeekId(timezone)
-  const { weekId, goToWeek } = useWeekId(defaultMonday)
+  const today = todayIso(timezone)
+  const { dateIso, goToDate } = useHashDate(today)
+
+  const weekId = mondayOf(dateIso)
   const { week, loading: weekLoading, toggleTick } = useWeek(weekId, config)
 
   if (configLoading) {
-    return <div className="app-shell"><p className="auth-muted">Loading…</p></div>
+    return <Center h="100dvh"><Loader /></Center>
   }
   if (!config) {
     return (
-      <div className="app-shell">
-        <h1>No config yet</h1>
-        <p className="auth-muted">Run the seed script to set up this household.</p>
-      </div>
+      <Center h="100dvh" p="md">
+        <Text c="dimmed">No config yet — run the seed script.</Text>
+      </Center>
     )
   }
 
-  const days = dayDates(weekId).map((iso, index) => ({
-    iso,
-    index,
-    isToday: iso === todayIso(timezone),
-  }))
-
-  // Sections: one per adult, showing the anchor they hold this week (frozen).
+  const dayIndex = dayIndexOf(dateIso)
   const adults = (config.people || []).filter((p) => p.type === 'adult')
-  const sections = week
-    ? adults.map((person) => {
-        const anchorId = week.roles?.[person.id]
-        const anchor = anchorId ? config.anchors?.[anchorId] : null
-        return {
-          key: person.id,
-          title: person.name,
-          subtitle: anchor?.label,
-          color: person.color,
-          rows: anchorRows(anchor, person),
-        }
-      })
-    : []
+  const cleanerVisit = week?.cleanerVisit || null
 
   return (
-    <div className="week-view">
-      <header className="app-header">
-        <span className="app-header-title">Family Chores</span>
-        <span className="app-header-user">
-          {profile.displayName || profile.email}
-          <button type="button" className="linkbtn" onClick={onSignOut}>
-            Sign out
-          </button>
-        </span>
-      </header>
+    <Container size="sm" py="md" px="sm">
+      <Group justify="space-between" mb="md">
+        <Title order={3}>Family Chores</Title>
+        <Menu position="bottom-end" withArrow>
+          <Menu.Target>
+            <Text size="sm" c="dimmed" style={{ cursor: 'pointer' }}>
+              {profile.displayName || profile.email} ▾
+            </Text>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item onClick={onSignOut}>Sign out</Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </Group>
 
-      <WeekNav weekId={weekId} timezone={timezone} onGoToWeek={goToWeek} />
+      <DaySelector dateIso={dateIso} todayIso={today} onGoToDate={goToDate} />
 
-      {week?.cleanerVisit ? (
-        <Banner icon="🧽" title={`Cleaner visits ${longDayLabel(week.cleanerVisit)}`}>
-          Clear the decks the evening before.
-        </Banner>
+      {cleanerVisit === dateIso ? (
+        <Alert color="yellow" mt="md" title="🧽 Cleaner visits today" />
+      ) : cleanerVisit === addDays(dateIso, 1) ? (
+        <Alert color="yellow" mt="md" title="🧽 Cleaner comes tomorrow">
+          Clear the decks tonight.
+        </Alert>
       ) : null}
 
+      <Text fw={600} mt="lg" mb="xs">
+        {longDayLabel(dateIso)}
+      </Text>
+
       {weekLoading || !week ? (
-        <p className="auth-muted week-loading">Loading week…</p>
+        <Center py="xl"><Loader size="sm" /></Center>
       ) : (
-        <TaskGrid
-          days={days}
-          sections={sections}
-          ticks={week.ticks}
-          onToggle={toggleTick}
-        />
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+          {adults.map((person) => {
+            const anchorId = week.roles?.[person.id]
+            const anchor = anchorId ? config.anchors?.[anchorId] : null
+            return (
+              <TaskCard
+                key={person.id}
+                person={person}
+                anchor={anchor}
+                dayIndex={dayIndex}
+                ticks={week.ticks}
+                onToggle={toggleTick}
+              />
+            )
+          })}
+        </SimpleGrid>
       )}
-    </div>
+    </Container>
   )
 }

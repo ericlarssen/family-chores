@@ -1,48 +1,51 @@
+import { Button, Loader, Stack, Text, Title } from '@mantine/core'
 import { useAuth } from '../data/useAuth'
 
-// Gates the whole app on Google sign-in + allowlist membership.
+// Gates the app on Google sign-in + allowlist membership.
 //   signed out      → one Google button
 //   not allowlisted → a plain "ask to be added" message
-//   allowlisted     → children, rendered with the resolved profile + signOut
+//   allowlisted     → children({ profile, user, signOut })
 export default function AuthGate({ children }) {
   const { status, user, profile, signIn, signOut } = useAuth()
 
   if (status === 'loading') {
     return (
-      <div className="auth-gate">
-        <p className="auth-muted">Loading…</p>
+      <div className="full-center">
+        <Loader />
       </div>
     )
   }
 
   if (status === 'signed-out') {
     return (
-      <div className="auth-gate">
-        <h1>Family Chores</h1>
-        <p className="auth-muted">Sign in to see this week.</p>
-        <button type="button" className="auth-btn" onClick={signIn}>
-          Sign in with Google
-        </button>
+      <div className="full-center">
+        <Stack align="center" gap="md" maw={360}>
+          <Title order={1}>Family Chores</Title>
+          <Text c="dimmed">Sign in to see this week.</Text>
+          <Button size="md" onClick={signIn}>
+            Sign in with Google
+          </Button>
+        </Stack>
       </div>
     )
   }
 
   if (status === 'not-allowed') {
     return (
-      <div className="auth-gate">
-        <h1>Not on the list yet</h1>
-        <p className="auth-muted">
-          You're signed in as <strong>{user?.email}</strong>, but this account
-          hasn't been added to the household. Ask an admin to add you, then sign
-          in again.
-        </p>
-        <button type="button" className="auth-btn auth-btn--ghost" onClick={signOut}>
-          Sign out
-        </button>
+      <div className="full-center">
+        <Stack align="center" gap="md" maw={420}>
+          <Title order={2}>Not on the list yet</Title>
+          <Text c="dimmed" ta="center">
+            You're signed in as <b>{user?.email}</b>, but this account hasn't been
+            added to the household. Ask an admin to add you, then sign in again.
+          </Text>
+          <Button variant="default" onClick={signOut}>
+            Sign out
+          </Button>
+        </Stack>
       </div>
     )
   }
 
-  // status === 'allowed'
   return children({ profile, user, signOut })
 }
