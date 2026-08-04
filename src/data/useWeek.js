@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
+  arrayRemove,
+  arrayUnion,
   deleteField,
   doc,
   onSnapshot,
@@ -80,5 +82,34 @@ export function useWeek(weekId, config) {
     [weekId],
   )
 
-  return { week, loading, toggleTick }
+  // Overrides live in an array on the week doc. arrayUnion/arrayRemove of the
+  // exact override object means concurrent edits to different overrides merge
+  // without clobbering each other.
+  const toggleSwap = useCallback(
+    (dayIndex, currentlyOn) => {
+      if (!weekId) return Promise.resolve()
+      const ref = doc(db, `households/${HOUSEHOLD_ID}/weeks/${weekId}`)
+      const ov = { type: 'swap', day: dayIndex }
+      return updateDoc(ref, {
+        overrides: currentlyOn ? arrayRemove(ov) : arrayUnion(ov),
+        updatedAt: serverTimestamp(),
+      }).catch((err) => console.error('[useWeek] toggleSwap failed', err))
+    },
+    [weekId],
+  )
+
+  const toggleSkip = useCallback(
+    (dayIndex, personId, taskId, currentlySkipped) => {
+      if (!weekId) return Promise.resolve()
+      const ref = doc(db, `households/${HOUSEHOLD_ID}/weeks/${weekId}`)
+      const ov = { type: 'skip', day: dayIndex, personId, taskId }
+      return updateDoc(ref, {
+        overrides: currentlySkipped ? arrayRemove(ov) : arrayUnion(ov),
+        updatedAt: serverTimestamp(),
+      }).catch((err) => console.error('[useWeek] toggleSkip failed', err))
+    },
+    [weekId],
+  )
+
+  return { week, loading, toggleTick, toggleSwap, toggleSkip }
 }

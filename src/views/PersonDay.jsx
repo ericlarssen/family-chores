@@ -24,6 +24,7 @@ import {
   todayIso,
 } from '../lib/weeks'
 import { encodeTick } from '../lib/ticks'
+import { effectiveRoles, isSkipped } from '../lib/overrides'
 
 // A kid's tasks for the day: their everyday tasks plus the day-specific job.
 function kidTasks(config, person, dayIndex) {
@@ -36,9 +37,9 @@ function kidTasks(config, person, dayIndex) {
   return job ? [...daily, { id: job.id, label: job.label, icon: '⭐' }] : daily
 }
 
-// An adult's anchor tasks for the day (frozen role → anchor).
+// An adult's anchor tasks for the day, honoring a day's swap override.
 function adultTasks(config, week, person, dayIndex) {
-  const anchor = config.anchors?.[week?.roles?.[person.id]]
+  const anchor = config.anchors?.[effectiveRoles(week, dayIndex)[person.id]]
   if (!anchor) return []
   const daily = (anchor.daily || [])
     .filter((t) => !t.retired && t.days.includes(dayIndex))
@@ -94,9 +95,11 @@ export default function PersonDay({ person, config, onBack }) {
   const { week, loading, toggleTick } = useWeek(weekId, config)
 
   const isKid = person.type === 'child'
-  const tasks = isKid
-    ? kidTasks(config, person, dayIndex)
-    : adultTasks(config, week, person, dayIndex)
+  const tasks = (
+    isKid
+      ? kidTasks(config, person, dayIndex)
+      : adultTasks(config, week, person, dayIndex)
+  ).filter((t) => !isSkipped(week, dayIndex, person.id, t.id))
 
   const doneCount = tasks.filter(
     (t) => week?.ticks?.[encodeTick(person.id, t.id, dayIndex)]?.done,

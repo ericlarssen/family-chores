@@ -1,5 +1,6 @@
 import {
   Alert,
+  Badge,
   Button,
   Center,
   Container,
@@ -14,6 +15,7 @@ import { useHousehold } from '../data/useHousehold'
 import { useWeek } from '../data/useWeek'
 import { useHashDate } from '../data/useHashDate'
 import { addDays, dayIndexOf, longDayLabel, mondayOf, todayIso } from '../lib/weeks'
+import { effectiveRoles, hasSwap } from '../lib/overrides'
 import DaySelector from '../components/DaySelector'
 import TaskCard from '../components/TaskCard'
 
@@ -28,7 +30,8 @@ export default function WeekView({ onBack }) {
   const { dateIso, goToDate } = useHashDate(today)
 
   const weekId = mondayOf(dateIso)
-  const { week, loading: weekLoading, toggleTick } = useWeek(weekId, config)
+  const { week, loading: weekLoading, toggleTick, toggleSwap, toggleSkip } =
+    useWeek(weekId, config)
 
   if (configLoading) {
     return <Center h="100dvh"><Loader /></Center>
@@ -64,16 +67,34 @@ export default function WeekView({ onBack }) {
         </Alert>
       ) : null}
 
-      <Text fw={600} mt="lg" mb="xs">
-        {longDayLabel(dateIso)}
-      </Text>
+      <Group justify="space-between" mt="lg" mb="xs">
+        <Group gap="xs">
+          <Text fw={600}>{longDayLabel(dateIso)}</Text>
+          {week && hasSwap(week, dayIndex) ? (
+            <Badge color="grape" variant="light">
+              Anchors swapped
+            </Badge>
+          ) : null}
+        </Group>
+        {week ? (
+          <Button
+            variant="subtle"
+            size="compact-sm"
+            color="grape"
+            onClick={() => toggleSwap(dayIndex, hasSwap(week, dayIndex))}
+          >
+            {hasSwap(week, dayIndex) ? 'Undo swap' : 'Swap tonight'}
+          </Button>
+        ) : null}
+      </Group>
 
       {weekLoading || !week ? (
         <Center py="xl"><Loader size="sm" /></Center>
       ) : (
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
           {adults.map((person) => {
-            const anchorId = week.roles?.[person.id]
+            const roles = effectiveRoles(week, dayIndex)
+            const anchorId = roles[person.id]
             const anchor = anchorId ? config.anchors?.[anchorId] : null
             return (
               <TaskCard
@@ -81,8 +102,9 @@ export default function WeekView({ onBack }) {
                 person={person}
                 anchor={anchor}
                 dayIndex={dayIndex}
-                ticks={week.ticks}
-                onToggle={toggleTick}
+                week={week}
+                onToggleTick={toggleTick}
+                onToggleSkip={toggleSkip}
               />
             )
           })}
