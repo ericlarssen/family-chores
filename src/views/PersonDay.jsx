@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import {
   ActionIcon,
   Avatar,
@@ -26,6 +27,7 @@ import {
 import { encodeTick } from '../lib/ticks'
 import { effectiveRoles, isSkipped } from '../lib/overrides'
 import { anchorSteps, isRoutineTask, routineDone } from '../lib/steps'
+import { celebrate } from '../lib/celebrate'
 import RoutineTask from '../components/RoutineTask'
 
 // A kid's tasks for the day: their everyday tasks plus the day-specific job.
@@ -118,6 +120,20 @@ export default function PersonDay({ person, config, onBack }) {
   const doneCount = tasks.filter(isTaskDone).length
   const allDone = tasks.length > 0 && doneCount === tasks.length
   const isToday = dateIso === today
+
+  // Confetti on the last check of the day. Fire only on a genuine not-done →
+  // done transition for the same person+day — never on load of an already-done
+  // day or when navigating between days.
+  const celebratedRef = useRef({ key: null, done: null })
+  useEffect(() => {
+    if (loading || !week) return
+    const key = `${person.id}:${dateIso}`
+    const prev = celebratedRef.current
+    if (prev.key === key && prev.done === false && allDone) {
+      celebrate()
+    }
+    celebratedRef.current = { key, done: allDone }
+  }, [person.id, dateIso, allDone, loading, week])
 
   return (
     <Container size="xs" py="md" px="md">

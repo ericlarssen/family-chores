@@ -17,6 +17,7 @@
     "@mantine/core": "8.3.18",
     "@mantine/dates": "8.3.18",
     "@mantine/hooks": "8.3.18",
+    "canvas-confetti": "1.9.4",
     "date-fns": "4.4.0",
     "dayjs": "1.11.21",
     "firebase": "12.17.0",
