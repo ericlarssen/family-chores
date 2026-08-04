@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function email() {
+      return request.auth.token.email.lower();
+    }
+
+    function allowed(hid) {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/households/$(hid)/allowlist/$(email()));
+    }
+
+    function role(hid) {
+      return get(/databases/$(database)/documents/households/$(hid)/allowlist/$(email())).data.role;
+    }
+
+    match /households/{hid} {
+      allow read: if allowed(hid);
+      allow write: if false;
+
+      match /allowlist/{e} {
+        allow read:  if allowed(hid);
+        allow write: if false;                       // seed script only
+      }
+
+      match /members/{uid} {
+        allow read:   if allowed(hid);
+        allow write:  if allowed(hid) && request.auth.uid == uid;
+      }
+
+      match /config/{doc} {
+        allow read:  if allowed(hid);
+        allow write: if allowed(hid) && role(hid) == 'admin';
+      }
+
+      match /configVersions/{v} {
+        allow read:   if allowed(hid);
+        allow create: if allowed(hid) && role(hid) == 'admin';
+        allow update, delete: if false;              // snapshots are immutable
+      }
+
+      match /weeks/{weekId} {
+        allow read:           if allowed(hid);
+        allow create, update: if allowed(hid);
+        allow delete:         if false;
+      }
+    }
+  }
+}
