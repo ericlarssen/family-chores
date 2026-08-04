@@ -12,6 +12,9 @@
   --space-4: 1.5rem;
   --space-5: 2.5rem;
 
+  --color-today: #fff6e6;
+  --color-today-line: #e6a23c;
+
   --radius: 0.75rem;
 
   --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;

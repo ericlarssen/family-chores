@@ -72,3 +72,282 @@ body {
   background: transparent;
   color: var(--color-accent);
 }
+
+/* ---- Week view ---------------------------------------------------------- */
+
+.week-view {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--space-3);
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.app-header-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.app-header-user {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.linkbtn {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.week-loading {
+  text-align: center;
+  padding: var(--space-4);
+}
+
+/* ---- Week navigation ---------------------------------------------------- */
+
+.weeknav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.weeknav-btn {
+  appearance: none;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+}
+
+.weeknav-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.weeknav-label {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.weeknav-range {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.weeknav-tag {
+  font-size: 0.75rem;
+  color: var(--color-today-line);
+  font-weight: 600;
+}
+
+.weeknav-today {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ---- Cleaner banner ----------------------------------------------------- */
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-today);
+  border: 1px solid var(--color-today-line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.banner-icon {
+  font-size: 1.25rem;
+}
+
+.banner-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-text {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* ---- Task grid ---------------------------------------------------------- */
+
+.grid-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1.6fr) repeat(7, minmax(2.75rem, 1fr));
+  min-width: 34rem;
+}
+
+.grid-row,
+.grid-section-head,
+.grid-row--head {
+  display: contents;
+}
+
+.grid-cell {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+}
+
+.grid-cell--corner {
+  position: sticky;
+  left: 0;
+  background: var(--color-surface);
+  z-index: 2;
+}
+
+.grid-day {
+  flex-direction: column;
+  gap: 1px;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.grid-day-dow {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.grid-day-num {
+  font-weight: 700;
+}
+
+.grid-day--today {
+  background: var(--color-today);
+  box-shadow: inset 0 -2px 0 var(--color-today-line);
+}
+
+/* Section header spanning the full width */
+.grid-section-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  left: 0;
+}
+
+.grid-section-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 3px;
+  flex: none;
+}
+
+.grid-section-title {
+  font-weight: 700;
+}
+
+.grid-section-sub {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.grid-task {
+  position: sticky;
+  left: 0;
+  background: var(--color-surface);
+  z-index: 1;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.grid-box {
+  justify-content: center;
+}
+
+.grid-box--empty::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+/* ---- Checkbox ----------------------------------------------------------- */
+
+.checkbox {
+  appearance: none;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #fff;
+  transition: transform 0.05s ease;
+}
+
+.checkbox:hover {
+  border-color: var(--color-accent);
+}
+
+.checkbox:active {
+  transform: scale(0.92);
+}
+
+.checkbox--done {
+  color: #fff;
+}
+
+.checkbox-tick {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+@media (max-width: 34rem) {
+  .grid-task {
+    font-size: 0.82rem;
+  }
+}

@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
+    "test": "vitest run tests/lib",
     "emulators": "firebase emulators:start --only firestore --project demo-family-chores",
     "test:rules": "firebase emulators:exec --only firestore --project demo-family-chores 'vitest run tests/rules.test.js'",
     "seed": "node seed/seed.mjs"
