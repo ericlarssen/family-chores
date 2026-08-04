@@ -14,7 +14,7 @@ export default defineConfig({
         name: 'Family Chores',
         short_name: 'Chores',
         description: 'The family weekly chore chart',
-        theme_color: '#4c6ef5',
+        theme_color: '#2e9e6b',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',

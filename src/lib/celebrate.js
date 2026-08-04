@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti'
 export function celebrate() {
   if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
 
-  const colors = ['#4c6ef5', '#12b886', '#f59f00', '#7a5bd6', '#e64980']
+  const colors = ['#2e9e6b', '#f59f00', '#2f5fa8', '#7a5bd6', '#e64980']
   const end = Date.now() + 800
 
   ;(function frame() {

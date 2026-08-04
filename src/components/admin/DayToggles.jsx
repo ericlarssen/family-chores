@@ -27,7 +27,7 @@ export default function DayToggles({ value, onChange }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: on ? 'var(--mantine-color-indigo-6)' : 'transparent',
+              background: on ? 'var(--mantine-primary-color-filled)' : 'transparent',
               color: on ? '#fff' : 'var(--mantine-color-dimmed)',
               border: '1px solid var(--mantine-color-default-border)',
             }}
