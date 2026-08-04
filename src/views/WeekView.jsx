@@ -1,10 +1,10 @@
 import {
   Alert,
+  Button,
   Center,
   Container,
   Group,
   Loader,
-  Menu,
   SimpleGrid,
   Text,
   Title,
@@ -20,7 +20,7 @@ import TaskCard from '../components/TaskCard'
 // Mobile-first, day-focused view. One day at a time, each adult's tasks as a
 // tappable checklist; navigate days with a calendar. Widens to two columns on
 // tablet+ via SimpleGrid.
-export default function WeekView({ profile, onSignOut }) {
+export default function WeekView({ onBack }) {
   const { config, loading: configLoading } = useConfig()
   const { timezone } = useHousehold()
 
@@ -48,17 +48,10 @@ export default function WeekView({ profile, onSignOut }) {
   return (
     <Container size="sm" py="md" px="sm">
       <Group justify="space-between" mb="md">
-        <Title order={3}>Family Chores</Title>
-        <Menu position="bottom-end" withArrow>
-          <Menu.Target>
-            <Text size="sm" c="dimmed" style={{ cursor: 'pointer' }}>
-              {profile.displayName || profile.email} ▾
-            </Text>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item onClick={onSignOut}>Sign out</Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        <Button variant="subtle" size="compact-sm" onClick={onBack}>
+          ← Everyone
+        </Button>
+        <Title order={4}>This week</Title>
       </Group>
 
       <DaySelector dateIso={dateIso} todayIso={today} onGoToDate={goToDate} />

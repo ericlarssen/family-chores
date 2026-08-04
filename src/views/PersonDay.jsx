@@ -1,0 +1,197 @@
+import {
+  ActionIcon,
+  Avatar,
+  Button,
+  Card,
+  Center,
+  Checkbox,
+  Container,
+  Group,
+  Loader,
+  Progress,
+  Stack,
+  Text,
+  UnstyledButton,
+} from '@mantine/core'
+import { useHousehold } from '../data/useHousehold'
+import { useHashDate } from '../data/useHashDate'
+import { useWeek } from '../data/useWeek'
+import {
+  addDays,
+  dayIndexOf,
+  longDayLabel,
+  mondayOf,
+  todayIso,
+} from '../lib/weeks'
+import { encodeTick } from '../lib/ticks'
+
+// A kid's tasks for the day: their everyday tasks plus the day-specific job.
+function kidTasks(config, person, dayIndex) {
+  const ct = config.childTasks?.[person.id]
+  if (!ct) return []
+  const daily = (ct.daily || []).map((t) => ({
+    id: t.id,
+    label: t.label,
+    icon: t.icon || '✅',
+  }))
+  const job = (ct.byDay || []).find((j) => j.day === dayIndex)
+  return job ? [...daily, { id: job.id, label: job.label, icon: '⭐' }] : daily
+}
+
+// An adult's anchor tasks for the day (frozen role → anchor).
+function adultTasks(config, week, person, dayIndex) {
+  const anchor = config.anchors?.[week?.roles?.[person.id]]
+  if (!anchor) return []
+  const daily = (anchor.daily || [])
+    .filter((t) => t.days.includes(dayIndex))
+    .map((t) => ({ id: t.id, label: t.label }))
+  const weekly = (anchor.weekly || [])
+    .filter((t) => t.day === dayIndex)
+    .map((t) => ({ id: t.id, label: t.label }))
+  return [...daily, ...weekly]
+}
+
+function initials(name) {
+  return name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
+}
+
+// A whole-card tappable task row — a big touch target for small fingers.
+function TaskRow({ task, done, big, onToggle }) {
+  return (
+    <UnstyledButton w="100%" onClick={() => onToggle(!done)}>
+      <Card
+        withBorder
+        radius="md"
+        padding={big ? 'md' : 'sm'}
+        bg={done ? 'var(--mantine-color-teal-0)' : undefined}
+      >
+        <Group gap="md" wrap="nowrap">
+          <Checkbox
+            checked={done}
+            readOnly
+            tabIndex={-1}
+            size={big ? 'xl' : 'md'}
+            color="teal"
+          />
+          {task.icon ? (
+            <Text fz={big ? 30 : 22} lh={1}>
+              {task.icon}
+            </Text>
+          ) : null}
+          <Text fw={big ? 600 : 500} fz={big ? 'lg' : 'md'}>
+            {task.label}
+          </Text>
+        </Group>
+      </Card>
+    </UnstyledButton>
+  )
+}
+
+export default function PersonDay({ person, config, onBack }) {
+  const { timezone } = useHousehold()
+  const today = todayIso(timezone)
+  const { dateIso, goToDate } = useHashDate(today)
+  const weekId = mondayOf(dateIso)
+  const dayIndex = dayIndexOf(dateIso)
+  const { week, loading, toggleTick } = useWeek(weekId, config)
+
+  const isKid = person.type === 'child'
+  const tasks = isKid
+    ? kidTasks(config, person, dayIndex)
+    : adultTasks(config, week, person, dayIndex)
+
+  const doneCount = tasks.filter(
+    (t) => week?.ticks?.[encodeTick(person.id, t.id, dayIndex)]?.done,
+  ).length
+  const allDone = tasks.length > 0 && doneCount === tasks.length
+  const isToday = dateIso === today
+
+  return (
+    <Container size="xs" py="md" px="md">
+      <Group justify="space-between" mb="md">
+        <Button variant="subtle" size="compact-sm" onClick={onBack}>
+          ← Everyone
+        </Button>
+        <Group gap={4} wrap="nowrap">
+          <ActionIcon
+            variant="default"
+            aria-label="Previous day"
+            onClick={() => goToDate(addDays(dateIso, -1))}
+          >
+            ‹
+          </ActionIcon>
+          <Button
+            variant={isToday ? 'light' : 'filled'}
+            size="compact-sm"
+            onClick={() => goToDate(today)}
+          >
+            {isToday ? 'Today' : 'Go to today'}
+          </Button>
+          <ActionIcon
+            variant="default"
+            aria-label="Next day"
+            onClick={() => goToDate(addDays(dateIso, 1))}
+          >
+            ›
+          </ActionIcon>
+        </Group>
+      </Group>
+
+      <Group gap="sm" mb="xs">
+        <Avatar
+          size={48}
+          radius={48}
+          styles={{ placeholder: { background: person.color, color: '#fff' } }}
+        >
+          {initials(person.name)}
+        </Avatar>
+        <div>
+          <Text fw={700} fz="xl">
+            {person.name}
+          </Text>
+          <Text size="sm" c="dimmed">
+            {longDayLabel(dateIso)}
+          </Text>
+        </div>
+      </Group>
+
+      {tasks.length > 0 ? (
+        <Progress
+          value={(doneCount / tasks.length) * 100}
+          color="teal"
+          size="sm"
+          radius="xl"
+          mb="md"
+          mt="xs"
+        />
+      ) : null}
+
+      {loading || !week ? (
+        <Center py="xl">
+          <Loader size="sm" />
+        </Center>
+      ) : tasks.length === 0 ? (
+        <Text c="dimmed" ta="center" py="xl">
+          Nothing scheduled today.
+        </Text>
+      ) : (
+        <Stack gap="sm">
+          {allDone ? (
+            <Text ta="center" fz="lg" fw={700} c="teal">
+              🎉 All done!
+            </Text>
+          ) : null}
+          {tasks.map((task) => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              big={isKid}
+              done={!!week.ticks?.[encodeTick(person.id, task.id, dayIndex)]?.done}
+              onToggle={(next) => toggleTick(person.id, task.id, dayIndex, next)}
+            />
+          ))}
+        </Stack>
+      )}
+    </Container>
+  )
+}

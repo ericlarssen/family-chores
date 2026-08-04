@@ -1,12 +1,10 @@
 import AuthGate from './components/AuthGate'
-import WeekView from './views/WeekView'
+import Home from './views/Home'
 
 function App() {
   return (
     <AuthGate>
-      {({ profile, signOut }) => (
-        <WeekView profile={profile} onSignOut={signOut} />
-      )}
+      {({ profile, signOut }) => <Home profile={profile} onSignOut={signOut} />}
     </AuthGate>
   )
 }
