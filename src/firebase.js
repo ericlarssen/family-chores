@@ -15,14 +15,13 @@ import {
 // firestore.rules. Paste the values from:
 //   Firebase console → Project settings → General → Your apps → SDK setup.
 //
-// TODO(setup): replace these placeholders once the Firebase project exists.
 export const firebaseConfig = {
-  apiKey: 'REPLACE_ME',
-  authDomain: 'REPLACE_ME.firebaseapp.com',
-  projectId: 'REPLACE_ME',
-  storageBucket: 'REPLACE_ME.appspot.com',
-  messagingSenderId: 'REPLACE_ME',
-  appId: 'REPLACE_ME',
+  apiKey: 'AIzaSyBdwecxtPhjY1eAwBtIj3lBVdKen69s05g',
+  authDomain: 'family-chores-8d9d9.firebaseapp.com',
+  projectId: 'family-chores-8d9d9',
+  storageBucket: 'family-chores-8d9d9.firebasestorage.app',
+  messagingSenderId: '466028459490',
+  appId: '1:466028459490:web:5c4ed8dd21c82533b2b5bb',
 }
 
 // The single household this app manages. Matches seed/config.json.
