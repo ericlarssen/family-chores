@@ -474,7 +474,7 @@ export default function AdminEditor({ config, account, onBack }) {
           borderTop: '1px solid var(--mantine-color-default-border)',
         }}
       >
-        <Text size="sm" c={error ? 'red' : saved ? 'teal' : 'dimmed'}>
+        <Text size="sm" c={error ? 'red' : saved ? 'leaf' : 'dimmed'}>
           {error
             ? error
             : saved

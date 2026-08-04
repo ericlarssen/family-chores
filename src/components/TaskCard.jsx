@@ -40,7 +40,7 @@ export default function TaskCard({
             flex: 'none',
           }}
         />
-        <Text fw={700}>{person.name}</Text>
+        <Text className="display" fw={600} fz={18}>{person.name}</Text>
         {anchor ? (
           <Badge variant="light" color="gray" ml="auto">
             {anchor.label}

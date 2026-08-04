@@ -36,11 +36,11 @@ export default function RoutineTask({
       <UnstyledButton w="100%" onClick={() => setOpen((o) => !o)}>
         <Group justify="space-between" wrap="nowrap">
           <Group gap="xs" wrap="nowrap">
-            <Checkbox checked={allDone} readOnly tabIndex={-1} size="md" color="teal" />
+            <Checkbox checked={allDone} readOnly tabIndex={-1} size="md" color="leaf" />
             <Text fw={500}>{label}</Text>
           </Group>
           <Group gap="xs" wrap="nowrap">
-            <Badge variant="light" color={allDone ? 'teal' : 'gray'}>
+            <Badge variant="light" color={allDone ? 'leaf' : 'gray'}>
               {doneCount}/{steps.length}
             </Badge>
             <Text c="dimmed" size="sm">

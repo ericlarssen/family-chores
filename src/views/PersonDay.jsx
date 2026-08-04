@@ -66,7 +66,7 @@ function TaskRow({ task, done, big, onToggle }) {
         withBorder
         radius="md"
         padding={big ? 'md' : 'sm'}
-        bg={done ? 'var(--mantine-color-teal-0)' : undefined}
+        bg={done ? 'var(--mantine-color-leaf-0)' : undefined}
       >
         <Group gap="md" wrap="nowrap">
           <Checkbox
@@ -74,7 +74,7 @@ function TaskRow({ task, done, big, onToggle }) {
             readOnly
             tabIndex={-1}
             size={big ? 'xl' : 'md'}
-            color="teal"
+            color="leaf"
           />
           {task.icon ? (
             <Text fz={big ? 30 : 22} lh={1}>
@@ -175,7 +175,7 @@ export default function PersonDay({ person, config, onBack }) {
           {initials(person.name)}
         </Avatar>
         <div>
-          <Text fw={700} fz="xl">
+          <Text className="display" fw={600} fz={28}>
             {person.name}
           </Text>
           <Text size="sm" c="dimmed">
@@ -187,7 +187,7 @@ export default function PersonDay({ person, config, onBack }) {
       {tasks.length > 0 ? (
         <Progress
           value={(doneCount / tasks.length) * 100}
-          color="teal"
+          color="leaf"
           size="sm"
           radius="xl"
           mb="md"
@@ -206,7 +206,7 @@ export default function PersonDay({ person, config, onBack }) {
       ) : (
         <Stack gap="sm">
           {allDone ? (
-            <Text ta="center" fz="lg" fw={700} c="teal">
+            <Text ta="center" fz="lg" fw={700} c="leaf">
               🎉 All done!
             </Text>
           ) : null}

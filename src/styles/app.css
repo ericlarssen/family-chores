@@ -1,4 +1,59 @@
-/* Mantine provides the design system. Only app-specific helpers live here. */
+/* "The good chart" — warm-editorial identity layered over Mantine.
+   Loaded after Mantine styles, so these overrides win. */
+
+:root {
+  --paper: #fbf8f2;
+  --ink: #2b2724;
+
+  /* Warm the neutrals; leave --mantine-color-body (#fff) so cards stay white
+     against the paper page. */
+  --mantine-color-text: #2b2724;
+  --mantine-color-dimmed: #8a8177;
+  --mantine-color-default-border: #ebe4d8;
+
+  /* Soft green wash a task wears once it's done. */
+  --done-wash: #eef7f1;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display face: Fraunces, set soft and warm rather than sharp. Applies to all
+   Mantine Titles and anything tagged .display (names, day labels, wordmarks). */
+.mantine-Title-root,
+.display {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-variation-settings: 'opsz' 40, 'SOFT' 48, 'WONK' 0, 'wght' 580;
+  letter-spacing: -0.01em;
+}
+.display {
+  line-height: 1.12;
+}
+
+/* Signature — the moment of done. The box presses when tapped; done rows take
+   the green wash. Confetti is the crescendo (elsewhere). */
+.mantine-Checkbox-input:active {
+  transform: scale(0.9);
+}
+
+/* Quality floor */
+:focus-visible {
+  outline: 2px solid var(--mantine-color-leaf-6);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 .full-center {
   min-height: 100dvh;

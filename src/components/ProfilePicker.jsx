@@ -63,7 +63,7 @@ export default function ProfilePicker({ config, timezone, account, onSelect, onS
                 >
                   {initials(person.name)}
                 </Avatar>
-                <Text fw={700} mt="sm">
+                <Text className="display" fw={600} fz={20} mt="sm">
                   {person.name}
                 </Text>
                 <Text size="xs" c="dimmed" lineClamp={1}>
@@ -79,7 +79,7 @@ export default function ProfilePicker({ config, timezone, account, onSelect, onS
             <Avatar size={72} radius={72} mx="auto" color="gray">
               📋
             </Avatar>
-            <Text fw={700} mt="sm">
+            <Text className="display" fw={600} fz={20} mt="sm">
               This week
             </Text>
             <Text size="xs" c="dimmed">
