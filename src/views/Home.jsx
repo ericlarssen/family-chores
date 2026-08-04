@@ -5,6 +5,7 @@ import { useProfile } from '../data/useProfile'
 import ProfilePicker from '../components/ProfilePicker'
 import PersonDay from './PersonDay'
 import WeekView from './WeekView'
+import AdminEditor from './AdminEditor'
 
 // Top-level kiosk routing. A parent stays signed in; `selection` (persisted in
 // localStorage) decides what shows: the picker, one person's day, or the
@@ -29,6 +30,10 @@ export default function Home({ profile, onSignOut }) {
 
   if (selection === 'overview') {
     return <WeekView onBack={back} />
+  }
+
+  if (selection === 'admin') {
+    return <AdminEditor config={config} account={profile} onBack={back} />
   }
 
   if (selection) {

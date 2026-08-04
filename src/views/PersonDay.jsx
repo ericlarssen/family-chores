@@ -29,12 +29,10 @@ import { encodeTick } from '../lib/ticks'
 function kidTasks(config, person, dayIndex) {
   const ct = config.childTasks?.[person.id]
   if (!ct) return []
-  const daily = (ct.daily || []).map((t) => ({
-    id: t.id,
-    label: t.label,
-    icon: t.icon || '✅',
-  }))
-  const job = (ct.byDay || []).find((j) => j.day === dayIndex)
+  const daily = (ct.daily || [])
+    .filter((t) => !t.retired)
+    .map((t) => ({ id: t.id, label: t.label, icon: t.icon || '✅' }))
+  const job = (ct.byDay || []).find((j) => j.day === dayIndex && !j.retired)
   return job ? [...daily, { id: job.id, label: job.label, icon: '⭐' }] : daily
 }
 
@@ -43,10 +41,10 @@ function adultTasks(config, week, person, dayIndex) {
   const anchor = config.anchors?.[week?.roles?.[person.id]]
   if (!anchor) return []
   const daily = (anchor.daily || [])
-    .filter((t) => t.days.includes(dayIndex))
+    .filter((t) => !t.retired && t.days.includes(dayIndex))
     .map((t) => ({ id: t.id, label: t.label }))
   const weekly = (anchor.weekly || [])
-    .filter((t) => t.day === dayIndex)
+    .filter((t) => !t.retired && t.day === dayIndex)
     .map((t) => ({ id: t.id, label: t.label }))
   return [...daily, ...weekly]
 }

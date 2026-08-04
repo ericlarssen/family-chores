@@ -5,8 +5,12 @@ import { encodeTick } from '../lib/ticks'
 // today, followed by the weekly task if it lands today. All text from config.
 function tasksForDay(anchor, dayIndex) {
   if (!anchor) return []
-  const daily = (anchor.daily || []).filter((t) => t.days.includes(dayIndex))
-  const weekly = (anchor.weekly || []).filter((t) => t.day === dayIndex)
+  const daily = (anchor.daily || []).filter(
+    (t) => !t.retired && t.days.includes(dayIndex),
+  )
+  const weekly = (anchor.weekly || []).filter(
+    (t) => !t.retired && t.day === dayIndex,
+  )
   return [...daily, ...weekly]
 }
 

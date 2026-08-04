@@ -38,6 +38,9 @@ export default function ProfilePicker({ config, timezone, account, onSelect, onS
             </Text>
           </Menu.Target>
           <Menu.Dropdown>
+            {account?.role === 'admin' ? (
+              <Menu.Item onClick={() => onSelect('admin')}>Edit chores</Menu.Item>
+            ) : null}
             <Menu.Item onClick={onSignOut}>Sign out</Menu.Item>
           </Menu.Dropdown>
         </Menu>
