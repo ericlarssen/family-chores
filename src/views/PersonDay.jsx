@@ -25,6 +25,8 @@ import {
 } from '../lib/weeks'
 import { encodeTick } from '../lib/ticks'
 import { effectiveRoles, isSkipped } from '../lib/overrides'
+import { anchorSteps, isRoutineTask, routineDone } from '../lib/steps'
+import RoutineTask from '../components/RoutineTask'
 
 // A kid's tasks for the day: their everyday tasks plus the day-specific job.
 function kidTasks(config, person, dayIndex) {
@@ -101,9 +103,19 @@ export default function PersonDay({ person, config, onBack }) {
       : adultTasks(config, week, person, dayIndex)
   ).filter((t) => !isSkipped(week, dayIndex, person.id, t.id))
 
-  const doneCount = tasks.filter(
-    (t) => week?.ticks?.[encodeTick(person.id, t.id, dayIndex)]?.done,
-  ).length
+  // The adult holding the (possibly swapped) anchor this day — for its steps.
+  const anchor = isKid
+    ? null
+    : config.anchors?.[effectiveRoles(week, dayIndex)[person.id]]
+
+  // A routine task is done only when all its steps are; everything else is a
+  // single tick.
+  const isTaskDone = (t) =>
+    !isKid && isRoutineTask(t)
+      ? routineDone(week, person.id, dayIndex, anchorSteps(anchor))
+      : !!week?.ticks?.[encodeTick(person.id, t.id, dayIndex)]?.done
+
+  const doneCount = tasks.filter(isTaskDone).length
   const allDone = tasks.length > 0 && doneCount === tasks.length
   const isToday = dateIso === today
 
@@ -182,15 +194,27 @@ export default function PersonDay({ person, config, onBack }) {
               🎉 All done!
             </Text>
           ) : null}
-          {tasks.map((task) => (
-            <TaskRow
-              key={task.id}
-              task={task}
-              big={isKid}
-              done={!!week.ticks?.[encodeTick(person.id, task.id, dayIndex)]?.done}
-              onToggle={(next) => toggleTick(person.id, task.id, dayIndex, next)}
-            />
-          ))}
+          {tasks.map((task) =>
+            !isKid && isRoutineTask(task) ? (
+              <RoutineTask
+                key={task.id}
+                person={person}
+                anchor={anchor}
+                label={task.label}
+                dayIndex={dayIndex}
+                week={week}
+                onToggleTick={toggleTick}
+              />
+            ) : (
+              <TaskRow
+                key={task.id}
+                task={task}
+                big={isKid}
+                done={!!week.ticks?.[encodeTick(person.id, task.id, dayIndex)]?.done}
+                onToggle={(next) => toggleTick(person.id, task.id, dayIndex, next)}
+              />
+            ),
+          )}
         </Stack>
       )}
     </Container>

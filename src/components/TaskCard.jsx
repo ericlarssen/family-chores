@@ -1,6 +1,8 @@
 import { Badge, Card, Checkbox, Group, Stack, Text } from '@mantine/core'
 import { encodeTick } from '../lib/ticks'
 import { isSkipped } from '../lib/overrides'
+import { isRoutineTask } from '../lib/steps'
+import RoutineTask from './RoutineTask'
 
 // One adult's tasks for the selected day: their anchor's daily tasks that apply
 // today, followed by the weekly task if it lands today. All text from config.
@@ -56,6 +58,20 @@ export default function TaskCard({
             const key = encodeTick(person.id, task.id, dayIndex)
             const done = !!ticks?.[key]?.done
             const skipped = isSkipped(week, dayIndex, person.id, task.id)
+
+            if (!skipped && isRoutineTask(task)) {
+              return (
+                <RoutineTask
+                  key={task.id}
+                  person={person}
+                  anchor={anchor}
+                  label={task.label}
+                  dayIndex={dayIndex}
+                  week={week}
+                  onToggleTick={onToggleTick}
+                />
+              )
+            }
 
             if (skipped) {
               return (
